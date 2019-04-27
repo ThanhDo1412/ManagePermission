@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MangementPermission.Service.Service;
 
 namespace ManagementPermission
 {
@@ -10,14 +11,20 @@ namespace ManagementPermission
             var input = new List<string>();
 
             //Read input
-            Console.WriteLine("Please insert input (finish by escape button):");
-            while (Console.ReadKey().Key == ConsoleKey.Escape)
+            Console.WriteLine("Please insert input (input exit for end of file):");
+            while (true)
             {
                 var line = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(line) || line.Equals("Exit"))
+                {
+                    break;
+                }
                 input.Add(line);
             }
 
             //TODO: call to service executed process
+            var structureService = new StructureService();
+            var test = structureService.CreateCompanyStructure(input);
             var output = new List<string>();
 
             //Display output
