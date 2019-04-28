@@ -24,14 +24,24 @@ namespace ManagementPermission
 
             //Create array of users and get all permission
             var structureService = new StructureService();
-            var company = structureService.CreateCompanyStruture(input);
-            var output = structureService.GetPermissionsOfCompany(company);
-
-            //Display output
-            Console.WriteLine("Output as below:");
-            foreach (var line in output)
+            try
             {
-                Console.WriteLine(line);
+                var inputs = structureService.SeparateUsersAndQueries(input);
+                var company = structureService.CreateCompanyStruture(inputs.Item1);
+                var usersPermission = structureService.GetPermissionsOfCompany(company);
+                var queriesOutput = structureService.ExecuteQueried(company, inputs.Item2);
+                usersPermission.AddRange(queriesOutput);
+
+                //Display output
+                Console.WriteLine("Output as below:");
+                foreach (var line in usersPermission)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
             Console.ReadLine();

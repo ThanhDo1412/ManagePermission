@@ -46,7 +46,7 @@ namespace ManagementPermission.Test
             result[0].MemberIndex.Count.ShouldBe(2);
             result[0].MemberIndex[0].ShouldBe(1);
             result[0].MemberIndex[1].ShouldBe(2);
-            result[0].Permissions.Length.ShouldBe(2);
+            result[0].Permissions.Count.ShouldBe(2);
             result[0].Permissions[0].ShouldBe("A");
             result[0].Permissions[1].ShouldBe("F");
 
@@ -54,32 +54,32 @@ namespace ManagementPermission.Test
             result[1].MemberIndex[0].ShouldBe(3);
             result[1].MemberIndex[1].ShouldBe(4);
             result[1].MemberIndex[2].ShouldBe(5);
-            result[1].Permissions.Length.ShouldBe(2);
+            result[1].Permissions.Count.ShouldBe(2);
             result[1].Permissions[0].ShouldBe("A");
             result[1].Permissions[1].ShouldBe("B");
 
             result[2].MemberIndex.Count.ShouldBe(1);
             result[2].MemberIndex[0].ShouldBe(6);
-            result[2].Permissions.Length.ShouldBe(3);
+            result[2].Permissions.Count.ShouldBe(3);
             result[2].Permissions[0].ShouldBe("A");
             result[2].Permissions[1].ShouldBe("C");
             result[2].Permissions[2].ShouldBe("E");
 
             result[3].MemberIndex.Count.ShouldBe(0);
-            result[3].Permissions.Length.ShouldBe(1);
+            result[3].Permissions.Count.ShouldBe(1);
             result[3].Permissions[0].ShouldBe("A");
 
             result[4].MemberIndex.Count.ShouldBe(0);
-            result[4].Permissions.Length.ShouldBe(1);
+            result[4].Permissions.Count.ShouldBe(1);
             result[4].Permissions[0].ShouldBe("D");
 
             result[5].MemberIndex.Count.ShouldBe(0);
-            result[5].Permissions.Length.ShouldBe(2);
+            result[5].Permissions.Count.ShouldBe(2);
             result[5].Permissions[0].ShouldBe("A");
             result[5].Permissions[1].ShouldBe("C");
 
             result[6].MemberIndex.Count.ShouldBe(0);
-            result[6].Permissions.Length.ShouldBe(2);
+            result[6].Permissions.Count.ShouldBe(2);
             result[6].Permissions[0].ShouldBe("A");
             result[6].Permissions[1].ShouldBe("B");
         }
@@ -120,40 +120,40 @@ namespace ManagementPermission.Test
             result[0].MemberIndex.Count.ShouldBe(2);
             result[0].MemberIndex[0].ShouldBe(1);
             result[0].MemberIndex[1].ShouldBe(2);
-            result[0].Permissions.Length.ShouldBe(2);
+            result[0].Permissions.Count.ShouldBe(2);
             result[0].Permissions[0].ShouldBe("A");
             result[0].Permissions[1].ShouldBe("F");
 
             result[1].MemberIndex.Count.ShouldBe(2);
             result[1].MemberIndex[0].ShouldBe(3);
             result[1].MemberIndex[1].ShouldBe(4);
-            result[1].Permissions.Length.ShouldBe(2);
+            result[1].Permissions.Count.ShouldBe(2);
             result[1].Permissions[0].ShouldBe("A");
             result[1].Permissions[1].ShouldBe("B");
 
             result[2].MemberIndex.Count.ShouldBe(1);
             result[2].MemberIndex[0].ShouldBe(5);
-            result[2].Permissions.Length.ShouldBe(3);
+            result[2].Permissions.Count.ShouldBe(3);
             result[2].Permissions[0].ShouldBe("A");
             result[2].Permissions[1].ShouldBe("C");
             result[2].Permissions[2].ShouldBe("E");
 
             result[3].MemberIndex.Count.ShouldBe(1);
             result[3].MemberIndex[0].ShouldBe(6);
-            result[3].Permissions.Length.ShouldBe(1);
+            result[3].Permissions.Count.ShouldBe(1);
             result[3].Permissions[0].ShouldBe("A");
 
             result[4].MemberIndex.Count.ShouldBe(0);
-            result[4].Permissions.Length.ShouldBe(1);
+            result[4].Permissions.Count.ShouldBe(1);
             result[4].Permissions[0].ShouldBe("D");
 
             result[5].MemberIndex.Count.ShouldBe(0);
-            result[5].Permissions.Length.ShouldBe(2);
+            result[5].Permissions.Count.ShouldBe(2);
             result[5].Permissions[0].ShouldBe("A");
             result[5].Permissions[1].ShouldBe("C");
 
             result[6].MemberIndex.Count.ShouldBe(0);
-            result[6].Permissions.Length.ShouldBe(2);
+            result[6].Permissions.Count.ShouldBe(2);
             result[6].Permissions[0].ShouldBe("A");
             result[6].Permissions[1].ShouldBe("B");
         }
@@ -520,43 +520,43 @@ namespace ManagementPermission.Test
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int> {1, 2},
-                    Permissions = new string[] {"A", "F"}
+                    Permissions = new List<string> {"A", "F"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int> {3, 4, 5},
-                    Permissions = new string[] {"A", "B"}
+                    Permissions = new List<string> {"A", "B"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int> {6},
-                    Permissions = new string[] {"A", "C", "E"}
+                    Permissions = new List<string> {"A", "C", "E"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int>(),
-                    Permissions = new string[] {"A"}
+                    Permissions = new List<string> {"A"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int>(),
-                    Permissions = new string[] {"D"}
+                    Permissions = new List<string> {"D"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int>(),
-                    Permissions = new string[] {"A", "C"}
+                    Permissions = new List<string> {"A", "C"}
                 },
                 new User()
                 {
                     FullPermissions = null,
                     MemberIndex = new List<int>(),
-                    Permissions = new string[] {"A", "B"}
+                    Permissions = new List<string> {"A", "B"}
                 },
             };
 
@@ -568,7 +568,7 @@ namespace ManagementPermission.Test
             //Assert
             result.ShouldBeOfType<string[]>();
             result.ShouldNotBeEmpty();
-            result.Length.ShouldBe(7);
+            result.Count.ShouldBe(7);
 
             result[0].ShouldBe("A, B, C, D, E, F");
             result[1].ShouldBe("A, B, C, D");
@@ -577,6 +577,264 @@ namespace ManagementPermission.Test
             result[4].ShouldBe("D");
             result[5].ShouldBe("A, C");
             result[6].ShouldBe("A, B");
+        }
+
+        [Test]
+        public void SeparateUsersAndQueries_When_Send_Corrected_List_Expect_Ok()
+        {
+            //Arrange
+            var input = new List<string>()
+            {
+                "6",
+                "A F",
+                "A B",
+                "A C E",
+                "A",
+                "D",
+                "A C",
+                "A B",
+                "CEO",
+                "CEO",
+                "1",
+                "1",
+                "1",
+                "2",
+                "ADD 2 X",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2 X",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = structureService.SeparateUsersAndQueries(input);
+
+            //Assert
+            result.ShouldBeOfType<Tuple<List<string>, string[]>>();
+            result.Item1.Count.ShouldBe(14);
+            result.Item2.Length.ShouldBe(6);
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Corrected_Queries_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "ADD 2 X",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2 X",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = structureService.ExecuteQueried(users, queries);
+
+            //Assert
+            result.ShouldBeOfType<List<string>>();
+            result.ShouldNotBeEmpty();
+            result.Count.ShouldBe(4);
+
+            result[0].ShouldBe("A, B, C, E, X");
+            result[1].ShouldBe("A, B, C, D, E, F, X");
+            result[2].ShouldBe("A, B, C, E");
+            result[3].ShouldBe("A, B, C, D, E, F");
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Missing_Query_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "ADD 2",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2 X",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = Assert.Throws<Exception>(() => structureService.ExecuteQueried(users, queries));
+
+            //Assert
+            result.ShouldBeOfType<Exception>();
+            result.Message.ShouldBe(ErrorMessage.QueryInvalid);
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Wrong_Query_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "CREATE 2 X",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2 X",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = Assert.Throws<Exception>(() => structureService.ExecuteQueried(users, queries));
+
+            //Assert
+            result.ShouldBeOfType<Exception>();
+            result.Message.ShouldBe(ErrorMessage.QueryInvalid);
         }
     }
 }

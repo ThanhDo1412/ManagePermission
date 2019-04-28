@@ -56,25 +56,108 @@ namespace MangementPermission.Service.Service
         /// </summary>
         /// <param name="company">Array of users in company</param>
         /// <returns>Array permission of all users</returns>
-        public string[] GetPermissionsOfCompany(User[] company)
+        public List<string> GetPermissionsOfCompany(User[] company)
         {
             for (var i = 0; i < company.Length; i++)
             {
                 //Get lastest user
-                var user = company[company.Length - i - 1];
-                user.FullPermissions = user.Permissions;
+                GetFullPermission(company, company.Length - i - 1);
+            }
 
-                if (user.MemberIndex.Any())
+            return company.Select(x => string.Join(", ", x.FullPermissions)).ToList();
+        }
+
+        /// <summary>
+        /// Separate input to array user and array queries
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Tuple<List<string>, string[]> SeparateUsersAndQueries(List<string> input)
+        {
+            var users = new List<string>();
+            var index = 0;
+            
+            foreach (var line in input)
+            {
+                if (Contanst.Command.Any(x => line.StartsWith(x)))
                 {
-                    foreach (var memberIndex in user.MemberIndex)
-                    {
-                        user.FullPermissions =
-                            user.FullPermissions.Union(company[memberIndex].FullPermissions).OrderBy(x => x).ToArray();
-                    }
+                    break;
+                }
+                users.Add(line);
+                index++;
+            }
+
+            var queries = new string[input.Count - index];
+            Array.Copy(input.ToArray(), index, queries, 0, input.Count - index);
+            return new Tuple<List<string>, string[]>(users, queries);
+        }
+
+        /// <summary>
+        /// Execute all queries
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="queries"></param>
+        /// <returns></returns>
+        public List<string> ExecuteQueried(User[] users, string[] queries)
+        {
+            var output = new List<string>();
+            foreach (var query in queries)
+            {
+                var detail = query.Split(' ');
+                if (detail.Length < 2 || string.IsNullOrWhiteSpace(query))
+                {
+                    throw new Exception(ErrorMessage.QueryInvalid);
+                }
+                var userIndex = ValidationIndex(detail[1], users.Length);
+                
+                switch (detail[0])
+                {
+                    case "ADD":
+                        if (detail.Length != 3)
+                        {
+                            throw new Exception(ErrorMessage.QueryInvalid);
+                        }
+                        AddPermission(users[userIndex], detail[2]);
+                        break;
+                    case "REMOVE":
+                        if (detail.Length != 3)
+                        {
+                            throw new Exception(ErrorMessage.QueryInvalid);
+                        }
+                        RemovePermission(users[userIndex], detail[2]);
+                        break;
+                    case "QUERY":
+                        output.Add(string.Join(", ", GetFullPermission(users, userIndex)));
+                        break;
+                    default:
+                        throw new Exception(ErrorMessage.QueryInvalid);
                 }
             }
 
-            return company.Select(x => string.Join(", ", x.FullPermissions)).ToArray();
+            return output;
+        }
+
+        /// <summary>
+        /// Update and get full permission
+        /// </summary>
+        /// <param name="company"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private List<string> GetFullPermission(User[] company, int index)
+        {
+            var user = company[index];
+            user.FullPermissions = user.Permissions;
+
+            if (user.MemberIndex.Any())
+            {
+                foreach (var memberIndex in user.MemberIndex)
+                {
+                    user.FullPermissions =
+                        user.FullPermissions.Union(company[memberIndex].FullPermissions).OrderBy(x => x).ToList();
+                }
+            }
+
+            return user.FullPermissions;
         }
 
         #region validation
@@ -97,7 +180,7 @@ namespace MangementPermission.Service.Service
                 throw new Exception(ErrorMessage.QuantityOutOfRange);
             }
 
-            if (total != (inputLenght - 2) / 2)
+            if (total != ((inputLenght - 2) / 2))
             {
                 throw new Exception(ErrorMessage.QuantityNotFix);
             }
@@ -110,7 +193,7 @@ namespace MangementPermission.Service.Service
         /// </summary>
         /// <param name="input">permission of user</param>
         /// <returns> array of permissions </returns>
-        private string[] ValidationPermission(string input)
+        private List<string> ValidationPermission(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -122,7 +205,7 @@ namespace MangementPermission.Service.Service
             {
                 throw new Exception(ErrorMessage.PermissionOutOfRange);
             }
-            return permissions;
+            return permissions.ToList();
         }
 
         /// <summary>
@@ -142,8 +225,8 @@ namespace MangementPermission.Service.Service
                 return 0;
             }
 
-            if (!int.TryParse(input, out var position) 
-                || position <= 0 || position >= 100000 
+            if (!int.TryParse(input, out var position)
+                || position <= 0 || position >= 100000
                 || position >= currentIndex
                 || position > totalUser)
             {
@@ -158,7 +241,45 @@ namespace MangementPermission.Service.Service
             return position;
         }
 
+        /// <summary>
+        /// Check validation of manager index and return index
+        /// </summary>
+        /// <param name="input">CEO or position of user</param>
+        /// <param name="totalUser">total of users in input</param>
+        /// <returns>
+        /// 0 if CEO
+        /// number if manager is user
+        /// </returns>
+        private int ValidationIndex(string input, int totalUser)
+        {
+            if (input.Equals("CEO"))
+            {
+                return 0;
+            }
+
+            if (!int.TryParse(input, out var position)
+                || position > totalUser)
+            {
+                throw new Exception(ErrorMessage.ManagerInvalid);
+            }
+
+            return position;
+        }
+
         #endregion
 
+        #region Query
+
+        private void AddPermission(User user, string permission)
+        {
+            user.Permissions.Add(permission);
+        }
+
+        private void RemovePermission(User user, string permission)
+        {
+            user.Permissions.Remove(permission);
+        }
+
+        #endregion
     }
 }

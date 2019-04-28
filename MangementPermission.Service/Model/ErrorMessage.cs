@@ -11,5 +11,6 @@ namespace MangementPermission.Service.Model
         public static string PermissionInvalid = "Permission is invalid";
         public static string ManagerInvalid = "Manager is invalid";
         public static string CEONoMember = "CEO hasn't member";
+        public static string QueryInvalid = "Query is invalid";
     }
 }
