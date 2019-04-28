@@ -1,138 +1,161 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using MangementPermission.Service.Model;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MangementPermission.Service.Service
 {
     public class StructureService
     {
         /// <summary>
-        /// Create structure of company in tree with ceo is root
+        /// Create company structure
         /// </summary>
         /// <param name="input"></param>
         /// <returns>
-        /// null: create fail
-        /// User: create success
+        /// null if create failed
+        /// list of user if create succecced
         /// </returns>
-        public User CreateCompanyStructure(List<string> input)
+        public User[] CreateCompanyStruture(List<string> input)
         {
             //Check quatity of company
-            var total = ValidationQualityOfUsers(input[0]);
-            if (total == 0)
-            {
-                return null;
-            }
+            var total = ValidationQualityOfUsers(input[0], input.Count);
 
+            var users = new User[total + 1];
             //Set permission for CEO
             var ceoPermissions = ValidationPermission(input[1]);
-            if (ceoPermissions == null)
+            users[0] = new User()
             {
-                return null;
-            }
-            var ceo = new User(ceoPermissions, 0);
+                Permissions = ceoPermissions,
+                MemberIndex = new List<int>()
+            };
 
             //Set permission and manager for all user
             for (var i = 2; i < total + 2; i++)
             {
+                var currentIndex = i - 1;
                 var permissions = ValidationPermission(input[i]);
-                if (permissions == null)
-                {
-                    return null;
-                }
+                var managerIndex = ValidationManager(input[i + total], currentIndex, total + 1);
 
-                var position = ValidationManager(input[i + total]);
-                if (position == -1)
+                //Create new user and add to array
+                var user = new User()
                 {
-                    return null;
-                }
+                    Permissions = permissions,
+                    MemberIndex = new List<int>()
+                };
+                users[currentIndex] = user;
 
-                if (position == 0)
-                {
-                    ceo.AddMember(permissions, i - 1);
-                }
-                else
-                {
-                    var manager = GetUserByIndex(position, ceo);
-                    manager.AddMember(permissions, i - 1);
-                }
+                //Update member of Manager
+                users[managerIndex].MemberIndex.Add(i - 1);
             }
 
-            return ceo;
+            return users;
         }
 
-        public User GetUserByIndex(int index, User ceo)
+        /// <summary>
+        /// Get permission of all users in company
+        /// </summary>
+        /// <param name="company">Array of users in company</param>
+        /// <returns>Array permission of all users</returns>
+        public string[] GetPermissionsOfCompany(User[] company)
         {
-            var queue = new Queue<User>();
-            queue.Enqueue(ceo);
-
-            while (queue.Count != 0)
+            for (var i = 0; i < company.Length; i++)
             {
-                var user = queue.Dequeue();
+                //Get lastest user
+                var user = company[company.Length - i - 1];
+                user.FullPermissions = user.Permissions;
 
-                foreach (var member in user.Members)
+                if (user.MemberIndex.Any())
                 {
-                    if (member.Index == index)
+                    foreach (var memberIndex in user.MemberIndex)
                     {
-                        return member;
+                        user.FullPermissions =
+                            user.FullPermissions.Union(company[memberIndex].FullPermissions).OrderBy(x => x).ToArray();
                     }
-                    queue.Enqueue(member);
                 }
             }
 
-            return null;
+            return company.Select(x => string.Join(", ", x.FullPermissions)).ToArray();
         }
 
         #region validation
 
         /// <summary>
-        /// Validation quatity of user
+        /// Validation quatity of users
         /// </summary>
         /// <param name="input">quatity of user</param>
-        /// <returns>
-        /// 0 if invalid
-        /// int if valid
-        /// </returns>
-        private int ValidationQualityOfUsers(string input)
+        /// <param name="inputLenght">lenght of input</param>
+        /// <returns> Quatity of users </returns>
+        private int ValidationQualityOfUsers(string input, int inputLenght)
         {
-            return int.TryParse(input, out var total) && total < 100000 && total > 0 ? total : 0;
+            if (!int.TryParse(input, out var total))
+            {
+                throw new Exception(ErrorMessage.QuantityInvalid);
+            }
+
+            if (total >= 100000 || total <= 0)
+            {
+                throw new Exception(ErrorMessage.QuantityOutOfRange);
+            }
+
+            if (total != (inputLenght - 2) / 2)
+            {
+                throw new Exception(ErrorMessage.QuantityNotFix);
+            }
+
+            return total;
         }
 
         /// <summary>
         /// Validation permission of user
         /// </summary>
         /// <param name="input">permission of user</param>
-        /// <returns>
-        /// null: invalid
-        /// array of permission: valid
-        /// </returns>
+        /// <returns> array of permissions </returns>
         private string[] ValidationPermission(string input)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                throw new Exception(ErrorMessage.PermissionInvalid);
+            }
+
             var permissions = input.Split(' ');
-            return permissions.Length > 0 && permissions.Length < 100 ? permissions : null;
+            if (permissions.Length <= 0 || permissions.Length >= 100)
+            {
+                throw new Exception(ErrorMessage.PermissionOutOfRange);
+            }
+            return permissions;
         }
 
         /// <summary>
-        /// Check manager of user
+        /// Check validation of manager index and return index
         /// </summary>
         /// <param name="input">CEO or position of user</param>
+        /// <param name="currentIndex">quatity of user at current</param>
+        /// <param name="totalUser">total of users in input</param>
         /// <returns>
         /// 0 if CEO
         /// number if manager is user
-        /// -1 if false
         /// </returns>
-        private int ValidationManager(string input)
+        private int ValidationManager(string input, int currentIndex, int totalUser)
         {
             if (input.Equals("CEO"))
             {
                 return 0;
             }
 
-            if (int.TryParse(input, out var position) && position > 0 && position < 100000)
+            if (!int.TryParse(input, out var position) 
+                || position <= 0 || position >= 100000 
+                || position >= currentIndex
+                || position > totalUser)
             {
-                return position;
+                //the user after CEO should be member of CEO
+                if (currentIndex == 1)
+                {
+                    throw new Exception(ErrorMessage.CEONoMember);
+                }
+                throw new Exception(ErrorMessage.ManagerInvalid);
             }
 
-            return -1;
+            return position;
         }
 
         #endregion

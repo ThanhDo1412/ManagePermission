@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MangementPermission.Service.Service;
+using System;
 using System.Collections.Generic;
-using MangementPermission.Service.Service;
 
 namespace ManagementPermission
 {
@@ -22,10 +22,10 @@ namespace ManagementPermission
                 input.Add(line);
             }
 
-            //TODO: call to service executed process
+            //Create array of users and get all permission
             var structureService = new StructureService();
-            var test = structureService.CreateCompanyStructure(input);
-            var output = new List<string>();
+            var company = structureService.CreateCompanyStruture(input);
+            var output = structureService.GetPermissionsOfCompany(company);
 
             //Display output
             Console.WriteLine("Output as below:");
@@ -33,6 +33,8 @@ namespace ManagementPermission
             {
                 Console.WriteLine(line);
             }
+
+            Console.ReadLine();
         }
     }
 }
