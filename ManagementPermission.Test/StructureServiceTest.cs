@@ -379,7 +379,7 @@ namespace ManagementPermission.Test
 
             //Assert
             result.ShouldBeOfType<Exception>();
-            result.Message.ShouldBe(ErrorMessage.ManagerInvalid);
+            result.Message.ShouldBe(ErrorMessage.UserInvalid);
         }
 
         [Test]
@@ -411,7 +411,7 @@ namespace ManagementPermission.Test
 
             //Assert
             result.ShouldBeOfType<Exception>();
-            result.Message.ShouldBe(ErrorMessage.ManagerInvalid);
+            result.Message.ShouldBe(ErrorMessage.UserInvalid);
         }
 
         [Test]
@@ -443,7 +443,7 @@ namespace ManagementPermission.Test
 
             //Assert
             result.ShouldBeOfType<Exception>();
-            result.Message.ShouldBe(ErrorMessage.ManagerInvalid);
+            result.Message.ShouldBe(ErrorMessage.UserInvalid);
         }
 
         [Test]
@@ -475,7 +475,7 @@ namespace ManagementPermission.Test
 
             //Assert
             result.ShouldBeOfType<Exception>();
-            result.Message.ShouldBe(ErrorMessage.ManagerInvalid);
+            result.Message.ShouldBe(ErrorMessage.UserInvalid);
         }
 
         [Test]
@@ -566,7 +566,7 @@ namespace ManagementPermission.Test
             var result = structureService.GetPermissionsOfCompany(input);
 
             //Assert
-            result.ShouldBeOfType<string[]>();
+            result.ShouldBeOfType<List<string>>();
             result.ShouldNotBeEmpty();
             result.Count.ShouldBe(7);
 
@@ -696,7 +696,7 @@ namespace ManagementPermission.Test
         }
 
         [Test]
-        public void ExecuteQueried_When_Send_Missing_Query_Expect_Ok()
+        public void ExecuteQueried_When_Send_Missing_Query_1_Expect_Ok()
         {
             //Arrange
             var users = new User[]
@@ -767,7 +767,220 @@ namespace ManagementPermission.Test
         }
 
         [Test]
-        public void ExecuteQueried_When_Send_Wrong_Query_Expect_Ok()
+        public void ExecuteQueried_When_Send_Missing_Query_2_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "ADD 2 X",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = Assert.Throws<Exception>(() => structureService.ExecuteQueried(users, queries));
+
+            //Assert
+            result.ShouldBeOfType<Exception>();
+            result.Message.ShouldBe(ErrorMessage.QueryInvalid);
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Missing_Query_3_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "ADD 2 X",
+                "QUERY 2",
+                "QUERY A",
+                "REMOVE 2 X",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = Assert.Throws<Exception>(() => structureService.ExecuteQueried(users, queries));
+
+            //Assert
+            result.ShouldBeOfType<Exception>();
+            result.Message.ShouldBe(ErrorMessage.UserInvalid);
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Missing_Query_4_Expect_Ok()
+        {
+            //Arrange
+            var users = new User[]
+            {
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D", "E", "F"},
+                    MemberIndex = new List<int> {1, 2},
+                    Permissions = new List<string> {"A", "F"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "D"},
+                    MemberIndex = new List<int> {3, 4, 5},
+                    Permissions = new List<string> {"A", "B"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B", "C", "E"},
+                    MemberIndex = new List<int> {6},
+                    Permissions = new List<string> {"A", "C", "E"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"D"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"D"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "C"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "C"}
+                },
+                new User()
+                {
+                    FullPermissions = new List<string> {"A", "B"},
+                    MemberIndex = new List<int>(),
+                    Permissions = new List<string> {"A", "B"}
+                },
+            };
+
+            //Arrange
+            var queries = new string[]
+            {
+                "ADD 2 X",
+                "QUERY 2",
+                "QUERY CEO",
+                "REMOVE 2 T",
+                "QUERY 2",
+                "QUERY CEO"
+            };
+
+            var structureService = new StructureService();
+
+            //Act
+            var result = Assert.Throws<Exception>(() => structureService.ExecuteQueried(users, queries));
+
+            //Assert
+            result.ShouldBeOfType<Exception>();
+            result.Message.ShouldBe(ErrorMessage.QueryInvalid);
+        }
+
+        [Test]
+        public void ExecuteQueried_When_Send_Wrong_Query_Expect_Error_Message()
         {
             //Arrange
             var users = new User[]

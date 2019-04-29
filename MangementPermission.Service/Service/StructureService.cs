@@ -137,29 +137,6 @@ namespace MangementPermission.Service.Service
             return output;
         }
 
-        /// <summary>
-        /// Update and get full permission
-        /// </summary>
-        /// <param name="company"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private List<string> GetFullPermission(User[] company, int index)
-        {
-            var user = company[index];
-            user.FullPermissions = user.Permissions;
-
-            if (user.MemberIndex.Any())
-            {
-                foreach (var memberIndex in user.MemberIndex)
-                {
-                    user.FullPermissions =
-                        user.FullPermissions.Union(company[memberIndex].FullPermissions).OrderBy(x => x).ToList();
-                }
-            }
-
-            return user.FullPermissions;
-        }
-
         #region validation
 
         /// <summary>
@@ -235,7 +212,7 @@ namespace MangementPermission.Service.Service
                 {
                     throw new Exception(ErrorMessage.CEONoMember);
                 }
-                throw new Exception(ErrorMessage.ManagerInvalid);
+                throw new Exception(ErrorMessage.UserInvalid);
             }
 
             return position;
@@ -260,7 +237,7 @@ namespace MangementPermission.Service.Service
             if (!int.TryParse(input, out var position)
                 || position > totalUser)
             {
-                throw new Exception(ErrorMessage.ManagerInvalid);
+                throw new Exception(ErrorMessage.UserInvalid);
             }
 
             return position;
@@ -269,15 +246,51 @@ namespace MangementPermission.Service.Service
         #endregion
 
         #region Query
-
+        /// <summary>
+        /// Add permission for user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="permission"></param>
         private void AddPermission(User user, string permission)
         {
             user.Permissions.Add(permission);
         }
 
+        /// <summary>
+        /// Remove permission of user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="permission"></param>
         private void RemovePermission(User user, string permission)
         {
+            if (!user.Permissions.Any(m => m.Equals(permission)))
+            {
+                throw new Exception(ErrorMessage.QueryInvalid);
+            }
             user.Permissions.Remove(permission);
+        }
+
+        /// <summary>
+        /// Update and get full permission
+        /// </summary>
+        /// <param name="company"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private List<string> GetFullPermission(User[] company, int index)
+        {
+            var user = company[index];
+            user.FullPermissions = user.Permissions;
+
+            if (user.MemberIndex.Any())
+            {
+                foreach (var memberIndex in user.MemberIndex)
+                {
+                    user.FullPermissions =
+                        user.FullPermissions.Union(company[memberIndex].FullPermissions).OrderBy(x => x).ToList();
+                }
+            }
+
+            return user.FullPermissions;
         }
 
         #endregion
