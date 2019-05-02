@@ -4,7 +4,8 @@
 This is the demo project describe how to create a structure of users with permission and how to get, add, remove permission of each user.
 
 2. Explain the time & space complexity of create struture of Users  
-
+- The BigO: O(n<sup>2</sup>)
+- The space complexity: O(n)
 
 3. How to run   
 Firstly, please run project ManagementPermission. After console displayed, input your user with role with format as below:
